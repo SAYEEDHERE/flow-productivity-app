@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: rgb(17 24 39); color: rgb(229 231 235); overflow-x: hidden; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        .sidebar-link { display: flex; align-items: center; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: #d1d5db; transition: all 0.2s ease-in-out; font-weight: 500;}
+        .sidebar-link:hover { background-color: rgba(255, 255, 255, 0.1); color: #f9fafb; }
+        .sidebar-link.active { background-color: #4f46e5; color: #f9fafb; }
+        .sidebar-link i { width: 1.25rem; margin-right: 0.75rem; text-align: center; }
+        .task-item:hover .task-actions { opacity: 1; }
+        .spinner { border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: #fff; width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        select option:disabled { color: #6b7280; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="relative min-h-screen w-full">
+        <!-- Animated Background Shapes -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+
+        <!-- App Layout -->
+        <div class="relative min-h-screen flex z-10">
+            <!-- Sidebar -->
+            <aside class="w-64 glass-effect p-6 flex-shrink-0 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 px-2 mb-10">
+                        <i class="fas fa-wave-square text-2xl text-indigo-400"></i>
+                        <h1 class="text-2xl font-bold font-poppins text-white">Flow</h1>
+                    </div>
+                    <nav class="space-y-2">
+                        <a href="dashboard.html" class="sidebar-link"><i class="fas fa-home"></i><span>Home</span></a>
+                        <a href="goals.html" class="sidebar-link"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+                        <a href="#" class="sidebar-link active"><i class="fas fa-check-circle"></i><span>Tasks</span></a>
+                        <a href="pomodoro.html" class="sidebar-link"><i class="fas fa-clock"></i><span>Pomodoro</span></a>
+                        <a href="mood-tracker.html" class="sidebar-link"><i class="fas fa-smile-beam"></i><span>Mood Tracker</span></a>
+                        <a href="analytics.html" class="sidebar-link"><i class="fas fa-chart-pie"></i><span>Analytics</span></a>
+                    </nav>
+                </div>
+                <div><a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i><span>Settings</span></a></div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-8 overflow-y-auto">
+                <header class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white font-poppins">My Tasks</h2>
+                        <p class="text-gray-400">Plan your day, link to your goals, and get to work.</p>
+                    </div>
+                    <button id="add-task-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Task</span>
+                    </button>
+                </header>
+                
+                <div id="task-list-container" class="glass-effect rounded-xl">
+                    <ul id="task-list"></ul>
+                    <div id="loading-spinner" class="text-center p-8 text-gray-400">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mx-auto"></div>
+                        <p class="mt-4">Loading tasks...</p>
+                    </div>
+                    <div id="no-tasks-message" class="hidden text-center text-gray-500 p-8">
+                        <p>No tasks yet. Add one to get started!</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Add Task Modal -->
+    <div id="task-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="glass-effect rounded-xl p-8 max-w-lg w-full mx-4">
+            <h3 class="text-xl font-bold text-white mb-6">Add New Task</h3>
+            <div class="space-y-4">
+                <input type="text" id="task-title-input" placeholder="Task Title" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-gray-500">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <select id="task-priority-select" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <option value="Low">Low Priority</option>
+                        <option value="Medium" selected>Medium Priority</option>
+                        <option value="High">High Priority</option>
+                    </select>
+                    <input type="date" id="task-date-input" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <select id="task-goal-select" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <!-- Goals will be populated here -->
+                </select>
+            </div>
+            <div class="flex justify-end gap-4 mt-8">
+                <button id="cancel-task-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition">Cancel</button>
+                <button id="save-task-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition w-32 text-center">
+                    <span class="btn-text">Save Task</span>
+                    <span class="btn-spinner hidden spinner mx-auto"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="glass-effect rounded-xl p-8 max-w-sm w-full mx-4 text-center">
+            <h3 class="text-xl font-bold text-white mb-2">Delete Task?</h3>
+            <p class="text-gray-400 mb-6">This will be permanently deleted.</p>
+            <div class="flex justify-center gap-4">
+                <button id="cancel-delete-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition w-full">Cancel</button>
+                <button id="confirm-delete-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition w-full">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, doc, updateDoc, deleteDoc, serverTimestamp, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDvOSwEPDT1kiBFEdUXyH_3-ZlLLaUPmmk",
+          authDomain: "flow-ea773.firebaseapp.com",
+          projectId: "flow-ea773",
+          storageBucket: "flow-ea773.appspot.com",
+          messagingSenderId: "426640040797",
+          appId: "1:426640040797:web:1ffcd2becbf8d33b097eb4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // UI Elements
+        const addTaskBtn = document.getElementById('add-task-btn');
+        const taskModal = document.getElementById('task-modal');
+        const saveTaskBtn = document.getElementById('save-task-btn');
+        const cancelTaskBtn = document.getElementById('cancel-task-btn');
+        const taskTitleInput = document.getElementById('task-title-input');
+        const taskPrioritySelect = document.getElementById('task-priority-select');
+        const taskDateInput = document.getElementById('task-date-input');
+        const taskGoalSelect = document.getElementById('task-goal-select');
+        const taskList = document.getElementById('task-list');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const noTasksMessage = document.getElementById('no-tasks-message');
+        const deleteModal = document.getElementById('delete-modal');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const saveBtnText = saveTaskBtn.querySelector('.btn-text');
+        const saveBtnSpinner = saveTaskBtn.querySelector('.btn-spinner');
+
+        let currentUser = null;
+        let tasksUnsubscribe = null;
+        let taskToDeleteId = null;
+
+        const priorityStyles = {
+            'High': { 'tag': 'bg-red-500/20 text-red-400', 'dot': 'bg-red-500' },
+            'Medium': { 'tag': 'bg-yellow-500/20 text-yellow-400', 'dot': 'bg-yellow-500' },
+            'Low': { 'tag': 'bg-sky-500/20 text-sky-400', 'dot': 'bg-sky-500' }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                getTasks(user.uid);
+                loadGoalsIntoSelect(user.uid);
+            } else {
+                window.location.href = window.location.href.replace('tasks.html', 'auth.html');
+            }
+        });
+
+        const loadGoalsIntoSelect = async (userId) => {
+            const goalsRef = collection(db, 'users', userId, 'goals');
+            const q = query(goalsRef, orderBy('createdAt', 'desc'));
+            const querySnapshot = await getDocs(q);
+            
+            taskGoalSelect.innerHTML = ''; // Clear previous options
+            if (querySnapshot.empty) {
+                taskGoalSelect.innerHTML = `<option value="" disabled selected>Create a goal first to link tasks</option>`;
+            } else {
+                taskGoalSelect.innerHTML = `<option value="">Link to a goal (optional)</option>`;
+                querySnapshot.forEach((doc) => {
+                    const goal = doc.data();
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    option.textContent = goal.title;
+                    option.dataset.title = goal.title;
+                    taskGoalSelect.appendChild(option);
+                });
+            }
+        };
+
+        const getTasks = (userId) => {
+            if (tasksUnsubscribe) tasksUnsubscribe();
+            const tasksRef = collection(db, 'users', userId, 'tasks');
+            const q = query(tasksRef, orderBy('createdAt', 'desc'));
+
+            tasksUnsubscribe = onSnapshot(q, (querySnapshot) => {
+                loadingSpinner.style.display = 'none';
+                taskList.innerHTML = '';
+                if (querySnapshot.empty) {
+                    noTasksMessage.classList.remove('hidden');
+                } else {
+                    noTasksMessage.classList.add('hidden');
+                    querySnapshot.forEach((doc) => renderTask(doc.id, doc.data()));
+                }
+            });
+        };
+
+        const renderTask = (id, task) => {
+            const isCompleted = task.completed;
+            const styles = priorityStyles[task.priority] || priorityStyles['Medium'];
+            
+            const li = document.createElement('li');
+            li.className = 'task-item flex items-center justify-between p-4 border-b border-white/10 last:border-b-0';
+            li.innerHTML = `
+                <div class="flex items-start gap-4">
+                    <button data-id="${id}" class="toggle-complete-btn text-2xl mt-1 ${isCompleted ? 'text-green-500' : 'text-gray-600 hover:text-green-400'} transition-colors">
+                        <i class="fas ${isCompleted ? 'fa-check-circle' : 'fa-circle'}"></i>
+                    </button>
+                    <div>
+                        <p class="${isCompleted ? 'line-through text-gray-500' : 'text-white'}">${task.title}</p>
+                        <div class="flex items-center flex-wrap gap-x-4 gap-y-2 text-xs text-gray-400 mt-2">
+                            <span class="flex items-center gap-2 px-2 py-1 rounded-full ${styles.tag}"><div class="w-2 h-2 rounded-full ${styles.dot}"></div>${task.priority}</span>
+                            ${task.dueDate ? `<span><i class="fas fa-calendar-alt mr-1"></i> ${task.dueDate}</span>` : ''}
+                            ${task.goalTitle ? `<span class="hidden sm:inline-flex"><i class="fas fa-bullseye mr-1"></i> ${task.goalTitle}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="task-actions opacity-0 transition-opacity flex items-center gap-4">
+                    <button data-id="${id}" class="delete-btn text-gray-500 hover:text-red-500 transition-colors"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+            taskList.appendChild(li);
+        };
+
+        const addTask = async () => {
+            const title = taskTitleInput.value.trim();
+            if (!title) {
+                alert("Please enter a task title.");
+                return;
+            }
+
+            const priority = taskPrioritySelect.value;
+            const dueDate = taskDateInput.value;
+            const goalId = taskGoalSelect.value;
+            const selectedOption = taskGoalSelect.options[taskGoalSelect.selectedIndex];
+            const goalTitle = selectedOption ? selectedOption.dataset.title || '' : '';
+
+            saveBtnText.classList.add('hidden');
+            saveBtnSpinner.classList.remove('hidden');
+            saveTaskBtn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "users", currentUser.uid, "tasks"), {
+                    title, priority, dueDate, goalId, goalTitle,
+                    completed: false,
+                    createdAt: serverTimestamp()
+                });
+                closeTaskModal();
+            } catch (e) {
+                console.error("Error adding task: ", e);
+                alert("Could not save task. Please check the console for errors.");
+            } finally {
+                saveBtnText.classList.remove('hidden');
+                saveBtnSpinner.classList.add('hidden');
+                saveTaskBtn.disabled = false;
+            }
+        };
+
+        const deleteTask = async (taskId) => {
+            await deleteDoc(doc(db, "users", currentUser.uid, "tasks", taskId));
+        };
+
+        const toggleTaskStatus = async (taskId, currentStatus) => {
+            const taskRef = doc(db, 'users', currentUser.uid, 'tasks', taskId);
+            await updateDoc(taskRef, { completed: !currentStatus });
+        };
+        
+        const openTaskModal = () => {
+            taskModal.classList.remove('hidden');
+            taskDateInput.valueAsDate = new Date();
+        }
+        const closeTaskModal = () => {
+            taskTitleInput.value = '';
+            taskPrioritySelect.value = 'Medium';
+            taskDateInput.valueAsDate = new Date();
+            taskGoalSelect.value = '';
+            taskModal.classList.add('hidden');
+        };
+
+        const openDeleteModal = (id) => {
+            taskToDeleteId = id;
+            deleteModal.classList.remove('hidden');
+        };
+        const closeDeleteModal = () => {
+            taskToDeleteId = null;
+            deleteModal.classList.add('hidden');
+        };
+
+        addTaskBtn.addEventListener('click', openTaskModal);
+        cancelTaskBtn.addEventListener('click', closeTaskModal);
+        saveTaskBtn.addEventListener('click', addTask);
+        
+        taskList.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (!button) return;
+            const id = button.dataset.id;
+            if (button.classList.contains('toggle-complete-btn')) {
+                const isCompleted = button.querySelector('i').classList.contains('fa-check-circle');
+                toggleTaskStatus(id, isCompleted);
+            } else if (button.classList.contains('delete-btn')) {
+                openDeleteModal(id);
+            }
+        });
+
+        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (taskToDeleteId) deleteTask(taskToDeleteId);
+            closeDeleteModal();
+        });
+
+    </script>
+</body>
+</html>

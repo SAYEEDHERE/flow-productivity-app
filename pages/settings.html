@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: rgb(17 24 39); color: rgb(229 231 235); overflow-x: hidden; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        .sidebar-link { display: flex; align-items: center; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: #d1d5db; transition: all 0.2s ease-in-out; font-weight: 500;}
+        .sidebar-link:hover { background-color: rgba(255, 255, 255, 0.1); color: #f9fafb; }
+        .sidebar-link.active { background-color: #4f46e5; color: #f9fafb; }
+        .sidebar-link i { width: 1.25rem; margin-right: 0.75rem; text-align: center; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="relative min-h-screen w-full">
+        <!-- Animated Background Shapes -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+
+        <!-- App Layout -->
+        <div class="relative min-h-screen flex z-10">
+            <!-- Sidebar -->
+            <aside class="w-64 glass-effect p-6 flex-shrink-0 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 px-2 mb-10"><i class="fas fa-wave-square text-2xl text-indigo-400"></i><h1 class="text-2xl font-bold font-poppins text-white">Flow</h1></div>
+                    <nav class="space-y-2">
+                        <a href="dashboard.html" class="sidebar-link"><i class="fas fa-home"></i><span>Home</span></a>
+                        <a href="goals.html" class="sidebar-link"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+                        <a href="tasks.html" class="sidebar-link"><i class="fas fa-check-circle"></i><span>Tasks</span></a>
+                        <a href="pomodoro.html" class="sidebar-link"><i class="fas fa-clock"></i><span>Pomodoro</span></a>
+                        <a href="mood-tracker.html" class="sidebar-link"><i class="fas fa-smile-beam"></i><span>Mood Tracker</span></a>
+                        <a href="analytics.html" class="sidebar-link"><i class="fas fa-chart-pie"></i><span>Analytics</span></a>
+                    </nav>
+                </div>
+                <div><a href="#" class="sidebar-link active"><i class="fas fa-cog"></i><span>Settings</span></a></div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-8 overflow-y-auto">
+                <header class="mb-8">
+                    <h2 class="text-3xl font-bold text-white font-poppins">Settings</h2>
+                    <p class="text-gray-400">Manage your account and preferences.</p>
+                </header>
+
+                <div class="space-y-12 max-w-4xl">
+                    <!-- Profile Settings -->
+                    <div class="glass-effect rounded-xl p-8">
+                        <h3 class="text-xl font-bold text-white mb-6">Profile</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label class="block text-sm font-medium text-gray-400">Email</label><p id="user-email" class="text-lg text-white mt-1"></p></div>
+                            <div><label for="display-name-input" class="block text-sm font-medium text-gray-400">Display Name</label><input type="text" id="display-name-input" class="mt-1 w-full bg-gray-900/50 border border-gray-700 rounded-lg p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Enter your name"></div>
+                        </div>
+                        <div class="flex justify-end items-center mt-6 gap-4">
+                            <span id="save-success-msg" class="text-green-400 text-sm hidden">Profile saved!</span>
+                            <button id="save-profile-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition w-32">Save Profile</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Management -->
+                    <div class="glass-effect rounded-xl p-8">
+                        <h3 class="text-xl font-bold text-white mb-6">Data Management</h3>
+                        <div class="flex items-center gap-6">
+                            <button id="export-data-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition">Export My Data</button>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div class="border-2 border-red-500/30 rounded-xl p-8">
+                        <h3 class="text-xl font-bold text-red-400 mb-2">Danger Zone</h3>
+                        <p class="text-gray-400 mb-6">This action is irreversible. Please be certain before proceeding.</p>
+                        <button id="delete-account-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">Delete My Account</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="delete-account-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass-effect rounded-xl p-8 max-w-md w-full mx-4 text-center">
+            <h3 class="text-2xl font-bold text-red-400 mb-4">Are you absolutely sure?</h3>
+            <p class="text-gray-300 mb-6">This will permanently delete your account and all its data. To confirm, please type <strong class="text-white">DELETE</strong> into the box below.</p>
+            <input type="text" id="delete-confirm-input" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white text-center focus:ring-2 focus:ring-red-500 focus:outline-none uppercase">
+            <div class="flex justify-center gap-4 mt-6">
+                <button id="cancel-delete-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition w-full">Cancel</button>
+                <button id="confirm-delete-btn" class="bg-red-800 text-white/50 font-semibold py-2 px-6 rounded-lg w-full cursor-not-allowed" disabled>Delete Account</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, updateProfile, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDvOSwEPDT1kiBFEdUXyH_3-ZlLLaUPmmk",
+          authDomain: "flow-ea773.firebaseapp.com",
+          projectId: "flow-ea773",
+          storageBucket: "flow-ea773.appspot.com",
+          messagingSenderId: "426640040797",
+          appId: "1:426640040797:web:1ffcd2becbf8d33b097eb4"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser;
+
+        const ui = {
+            userEmail: document.getElementById('user-email'),
+            displayNameInput: document.getElementById('display-name-input'),
+            saveProfileBtn: document.getElementById('save-profile-btn'),
+            saveSuccessMsg: document.getElementById('save-success-msg'),
+            exportDataBtn: document.getElementById('export-data-btn'),
+            deleteAccountBtn: document.getElementById('delete-account-btn'),
+            deleteModal: document.getElementById('delete-account-modal'),
+            cancelDeleteBtn: document.getElementById('cancel-delete-btn'),
+            confirmDeleteBtn: document.getElementById('confirm-delete-btn'),
+            deleteConfirmInput: document.getElementById('delete-confirm-input')
+        };
+        
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                ui.userEmail.textContent = user.email;
+                ui.displayNameInput.value = user.displayName || '';
+            } else {
+                window.location.href = window.location.href.replace('settings.html', 'auth.html');
+            }
+        });
+        
+        ui.saveProfileBtn.addEventListener('click', async () => {
+            if (!currentUser) return;
+            const newName = ui.displayNameInput.value.trim();
+            
+            const originalText = ui.saveProfileBtn.textContent;
+            ui.saveProfileBtn.disabled = true;
+            ui.saveProfileBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+
+            try {
+                await updateProfile(currentUser, { displayName: newName });
+                ui.saveSuccessMsg.classList.remove('hidden');
+                setTimeout(() => ui.saveSuccessMsg.classList.add('hidden'), 2000);
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                alert('Failed to update profile.');
+            } finally {
+                ui.saveProfileBtn.disabled = false;
+                ui.saveProfileBtn.textContent = originalText;
+            }
+        });
+        
+        ui.exportDataBtn.addEventListener('click', async () => {
+            if (!currentUser) return;
+            const collectionsToExport = ['goals', 'tasks', 'moods', 'analytics', 'settings'];
+            let allData = { exportedAt: new Date().toISOString() };
+
+            for (const collectionName of collectionsToExport) {
+                const snapshot = await getDocs(collection(db, 'users', currentUser.uid, collectionName));
+                allData[collectionName] = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    // Convert Firestore Timestamps to ISO strings for clean JSON
+                    if (data.createdAt) data.createdAt = data.createdAt.toDate().toISOString();
+                    if (data.completedAt) data.completedAt = data.completedAt.toDate().toISOString();
+                    return { id: doc.id, ...data };
+                });
+            }
+            
+            const dataStr = JSON.stringify(allData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportFileDefaultName = 'flow_data_export.json';
+
+            let linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        });
+
+        ui.deleteAccountBtn.addEventListener('click', () => ui.deleteModal.classList.remove('hidden'));
+        ui.cancelDeleteBtn.addEventListener('click', () => ui.deleteModal.classList.add('hidden'));
+        
+        ui.deleteConfirmInput.addEventListener('input', () => {
+            if (ui.deleteConfirmInput.value === 'DELETE') {
+                ui.confirmDeleteBtn.disabled = false;
+                ui.confirmDeleteBtn.classList.remove('bg-red-800', 'text-white/50', 'cursor-not-allowed');
+                ui.confirmDeleteBtn.classList.add('bg-red-600', 'hover:bg-red-700');
+            } else {
+                ui.confirmDeleteBtn.disabled = true;
+                ui.confirmDeleteBtn.classList.add('bg-red-800', 'text-white/50', 'cursor-not-allowed');
+                ui.confirmDeleteBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+            }
+        });
+
+        ui.confirmDeleteBtn.addEventListener('click', async () => {
+            if (!currentUser || ui.deleteConfirmInput.value !== 'DELETE') return;
+            
+            ui.confirmDeleteBtn.textContent = 'Deleting...';
+            ui.confirmDeleteBtn.disabled = true;
+
+            try {
+                const collectionsToDelete = ['goals', 'tasks', 'moods', 'analytics', 'settings'];
+                for (const collectionName of collectionsToDelete) {
+                    const snapshot = await getDocs(collection(db, 'users', currentUser.uid, collectionName));
+                    const batch = writeBatch(db);
+                    snapshot.docs.forEach(doc => batch.delete(doc.ref));
+                    await batch.commit();
+                }
+
+                await deleteUser(currentUser);
+                alert('Account deleted successfully.');
+                window.location.href = '../index.html';
+            } catch (error) {
+                console.error("Error deleting account:", error);
+                alert(`Failed to delete account. You may need to sign in again to perform this action. Error: ${error.message}`);
+                ui.confirmDeleteBtn.textContent = 'Delete Account';
+                ui.confirmDeleteBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

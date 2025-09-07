@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goals - Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: rgb(17 24 39); color: rgb(229 231 235); overflow-x: hidden; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        .sidebar-link { display: flex; align-items: center; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: #d1d5db; transition: all 0.2s ease-in-out; font-weight: 500;}
+        .sidebar-link:hover { background-color: rgba(255, 255, 255, 0.1); color: #f9fafb; }
+        .sidebar-link.active { background-color: #4f46e5; color: #f9fafb; }
+        .sidebar-link i { width: 1.25rem; margin-right: 0.75rem; text-align: center; }
+        .goal-card:hover .goal-actions { opacity: 1; }
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="relative min-h-screen w-full">
+        <!-- Animated Background Shapes -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+
+        <!-- App Layout -->
+        <div class="relative min-h-screen flex z-10">
+            <!-- Sidebar -->
+            <aside class="w-64 glass-effect p-6 flex-shrink-0 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 px-2 mb-10">
+                        <i class="fas fa-wave-square text-2xl text-indigo-400"></i>
+                        <h1 class="text-2xl font-bold font-poppins text-white">Flow</h1>
+                    </div>
+                    <nav class="space-y-2">
+                        <a href="dashboard.html" class="sidebar-link"><i class="fas fa-home"></i><span>Home</span></a>
+                        <a href="#" class="sidebar-link active"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+                        <a href="tasks.html" class="sidebar-link"><i class="fas fa-check-circle"></i><span>Tasks</span></a>
+                        <a href="pomodoro.html" class="sidebar-link"><i class="fas fa-clock"></i><span>Pomodoro</span></a>
+                        <a href="mood-tracker.html" class="sidebar-link"><i class="fas fa-smile-beam"></i><span>Mood Tracker</span></a>
+                        <a href="analytics.html" class="sidebar-link"><i class="fas fa-chart-pie"></i><span>Analytics</span></a>
+                    </nav>
+                </div>
+                <div><a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i><span>Settings</span></a></div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-8 overflow-y-auto">
+                <header class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white font-poppins">My Goals</h2>
+                        <p class="text-gray-400">Define your ambitions and track your progress.</p>
+                    </div>
+                    <button id="add-goal-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Goal</span>
+                    </button>
+                </header>
+
+                <div id="goal-list-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <!-- Goals will be dynamically inserted here -->
+                </div>
+                <div id="loading-spinner" class="text-center p-8 text-gray-400">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mx-auto"></div>
+                    <p class="mt-4">Loading goals...</p>
+                </div>
+                 <div id="no-goals-message" class="hidden text-center text-gray-500 p-8 glass-effect rounded-xl">
+                    <p>No goals yet. Define your first ambition to get started!</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Goal Modal -->
+    <div id="goal-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="glass-effect rounded-xl p-8 max-w-lg w-full mx-4">
+            <h3 id="modal-title" class="text-xl font-bold text-white mb-6">Add New Goal</h3>
+            <div class="space-y-4">
+                <div>
+                    <label for="goal-title-input" class="block text-sm font-medium text-gray-400 mb-2">Goal Title</label>
+                    <input type="text" id="goal-title-input" placeholder="e.g., Become a proficient web developer" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-gray-500">
+                </div>
+                <div>
+                    <label for="goal-category-select" class="block text-sm font-medium text-gray-400 mb-2">Category</label>
+                    <select id="goal-category-select" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        <option value="Career">Career</option>
+                        <option value="Health">Health</option>
+                        <option value="Learning">Learning</option>
+                        <option value="Personal">Personal</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end gap-4 mt-8">
+                <button id="cancel-goal-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition">Cancel</button>
+                <button id="save-goal-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition w-32 text-center">
+                    <span class="btn-text">Save Goal</span>
+                    <span class="btn-spinner hidden spinner mx-auto"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="glass-effect rounded-xl p-8 max-w-sm w-full mx-4 text-center">
+            <h3 class="text-xl font-bold text-white mb-2">Delete Goal?</h3>
+            <p class="text-gray-400 mb-6">This will permanently delete the goal. This action cannot be undone.</p>
+            <div class="flex justify-center gap-4">
+                <button id="cancel-delete-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition w-full">Cancel</button>
+                <button id="confirm-delete-btn" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition w-full">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, doc, deleteDoc, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDvOSwEPDT1kiBFEdUXyH_3-ZlLLaUPmmk",
+          authDomain: "flow-ea773.firebaseapp.com",
+          projectId: "flow-ea773",
+          storageBucket: "flow-ea773.appspot.com",
+          messagingSenderId: "426640040797",
+          appId: "1:426640040797:web:1ffcd2becbf8d33b097eb4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // UI Elements
+        const addGoalBtn = document.getElementById('add-goal-btn');
+        const goalModal = document.getElementById('goal-modal');
+        const saveGoalBtn = document.getElementById('save-goal-btn');
+        const cancelGoalBtn = document.getElementById('cancel-goal-btn');
+        const goalTitleInput = document.getElementById('goal-title-input');
+        const goalCategorySelect = document.getElementById('goal-category-select');
+        const goalListContainer = document.getElementById('goal-list-container');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const noGoalsMessage = document.getElementById('no-goals-message');
+        const deleteModal = document.getElementById('delete-modal');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const saveBtnText = saveGoalBtn.querySelector('.btn-text');
+        const saveBtnSpinner = saveGoalBtn.querySelector('.btn-spinner');
+
+        let currentUser = null;
+        let goalsUnsubscribe = null;
+        let goalToDeleteId = null;
+
+        const categoryColors = {
+            'Career': 'border-t-indigo-500',
+            'Health': 'border-t-green-500',
+            'Learning': 'border-t-sky-500',
+            'Personal': 'border-t-pink-500'
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                getGoals(user.uid);
+            } else {
+                window.location.href = window.location.href.replace('goals.html', 'auth.html');
+            }
+        });
+
+        const getGoals = (userId) => {
+            if (goalsUnsubscribe) goalsUnsubscribe();
+            const goalsRef = collection(db, 'users', userId, 'goals');
+            const q = query(goalsRef, orderBy('createdAt', 'desc'));
+
+            goalsUnsubscribe = onSnapshot(q, (querySnapshot) => {
+                loadingSpinner.style.display = 'none';
+                goalListContainer.innerHTML = '';
+                if (querySnapshot.empty) {
+                    noGoalsMessage.classList.remove('hidden');
+                } else {
+                    noGoalsMessage.classList.add('hidden');
+                    querySnapshot.forEach((doc) => {
+                        renderGoal(doc.id, doc.data());
+                    });
+                }
+            });
+        };
+
+        const renderGoal = (id, goal) => {
+            const colorClass = categoryColors[goal.category] || 'border-t-gray-500';
+            const card = document.createElement('div');
+            card.className = `goal-card glass-effect rounded-xl p-6 border-t-4 ${colorClass} flex flex-col justify-between transition-transform hover:-translate-y-1`;
+            card.innerHTML = `
+                <div>
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-semibold px-2 py-1 rounded-full ${colorClass.replace('border-t-', 'bg-').replace('-500', '-500/20')} ${colorClass.replace('border-t-', 'text-').replace('-500', '-400')}">${goal.category}</span>
+                        <div class="goal-actions opacity-0 transition-opacity">
+                            <button data-id="${id}" class="delete-goal-btn text-gray-500 hover:text-red-500"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mt-4">${goal.title}</h3>
+                </div>
+                <div class="mt-6 text-sm text-gray-400">
+                    <!-- Progress will go here later -->
+                </div>
+            `;
+            goalListContainer.appendChild(card);
+        };
+
+        const addGoal = async () => {
+            const title = goalTitleInput.value.trim();
+            const category = goalCategorySelect.value;
+            if (title && category && currentUser) {
+                // Show loading state
+                saveBtnText.classList.add('hidden');
+                saveBtnSpinner.classList.remove('hidden');
+                saveGoalBtn.disabled = true;
+
+                try {
+                    await addDoc(collection(db, "users", currentUser.uid, "goals"), {
+                        title: title,
+                        category: category,
+                        createdAt: serverTimestamp()
+                    });
+                    closeGoalModal();
+                } catch (e) { 
+                    console.error("Error adding document: ", e); 
+                    alert("Could not save goal. Check console for error.");
+                } finally {
+                    // Hide loading state
+                    saveBtnText.classList.remove('hidden');
+                    saveBtnSpinner.classList.add('hidden');
+                    saveGoalBtn.disabled = false;
+                }
+            }
+        };
+
+        const deleteGoal = async (goalId) => {
+            await deleteDoc(doc(db, "users", currentUser.uid, "goals", goalId));
+        };
+
+        const openGoalModal = () => goalModal.classList.remove('hidden');
+        const closeGoalModal = () => {
+            goalTitleInput.value = '';
+            goalCategorySelect.value = 'Career';
+            goalModal.classList.add('hidden');
+        };
+
+        const openDeleteModal = (id) => {
+            goalToDeleteId = id;
+            deleteModal.classList.remove('hidden');
+        };
+        const closeDeleteModal = () => {
+            goalToDeleteId = null;
+            deleteModal.classList.add('hidden');
+        };
+        
+        addGoalBtn.addEventListener('click', openGoalModal);
+        cancelGoalBtn.addEventListener('click', closeGoalModal);
+        saveGoalBtn.addEventListener('click', addGoal);
+        
+        goalListContainer.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (button && button.classList.contains('delete-goal-btn')) {
+                openDeleteModal(button.dataset.id);
+            }
+        });
+
+        cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+        confirmDeleteBtn.addEventListener('click', () => {
+            if (goalToDeleteId) {
+                deleteGoal(goalToDeleteId);
+            }
+            closeDeleteModal();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro - Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: rgb(17 24 39); color: rgb(229 231 235); overflow-x: hidden; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        .sidebar-link { display: flex; align-items: center; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: #d1d5db; transition: all 0.2s ease-in-out; font-weight: 500;}
+        .sidebar-link:hover { background-color: rgba(255, 255, 255, 0.1); color: #f9fafb; }
+        .sidebar-link.active { background-color: #4f46e5; color: #f9fafb; }
+        .sidebar-link i { width: 1.25rem; margin-right: 0.75rem; text-align: center; }
+        #progress-ring-circle { transition: stroke-dashoffset 1s linear; }
+        .mode-btn.active { background-color: #4f46e5; color: white; }
+        select:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="relative min-h-screen w-full">
+        <!-- Animated Background Shapes -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+
+        <!-- App Layout -->
+        <div class="relative min-h-screen flex z-10">
+            <!-- Sidebar -->
+            <aside class="w-64 glass-effect p-6 flex-shrink-0 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 px-2 mb-10"><i class="fas fa-wave-square text-2xl text-indigo-400"></i><h1 class="text-2xl font-bold font-poppins text-white">Flow</h1></div>
+                    <nav class="space-y-2">
+                        <a href="dashboard.html" class="sidebar-link"><i class="fas fa-home"></i><span>Home</span></a>
+                        <a href="goals.html" class="sidebar-link"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+                        <a href="tasks.html" class="sidebar-link"><i class="fas fa-check-circle"></i><span>Tasks</span></a>
+                        <a href="#" class="sidebar-link active"><i class="fas fa-clock"></i><span>Pomodoro</span></a>
+                        <a href="mood-tracker.html" class="sidebar-link"><i class="fas fa-smile-beam"></i><span>Mood Tracker</span></a>
+                        <a href="analytics.html" class="sidebar-link"><i class="fas fa-chart-pie"></i><span>Analytics</span></a>
+                    </nav>
+                </div>
+                <div><a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i><span>Settings</span></a></div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-8 flex flex-col items-center justify-center">
+                <div class="w-full max-w-md mx-auto">
+                    <div class="glass-effect rounded-2xl p-8 flex flex-col items-center relative">
+                        <button id="settings-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition"><i class="fas fa-cog text-xl"></i></button>
+                        <div class="flex items-center gap-2 bg-gray-900/50 p-1 rounded-full mb-8">
+                            <button data-mode="focus" class="mode-btn active px-4 py-2 rounded-full font-semibold transition-colors">Focus</button>
+                            <button data-mode="shortBreak" class="mode-btn px-4 py-2 rounded-full font-semibold transition-colors">Short Break</button>
+                            <button data-mode="longBreak" class="mode-btn px-4 py-2 rounded-full font-semibold transition-colors">Long Break</button>
+                        </div>
+                        <div class="relative w-64 h-64 flex items-center justify-center">
+                            <svg class="absolute inset-0" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="8"/><circle id="progress-ring-circle" cx="60" cy="60" r="54" fill="none" stroke="#4f46e5" stroke-width="8" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg>
+                            <h1 id="timer-display" class="text-6xl font-bold text-white z-10">--:--</h1>
+                        </div>
+                        <div class="flex items-center gap-4 mt-8">
+                            <button id="start-pause-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-10 rounded-full text-lg transition-transform transform hover:scale-105 w-40 text-center"><span id="start-pause-text">Start</span></button>
+                            <button id="reset-btn" class="text-gray-400 hover:text-white transition"><i class="fas fa-redo"></i></button>
+                        </div>
+                    </div>
+                    <div class="mt-8 w-full">
+                         <label id="task-select-label" for="task-select" class="block text-sm font-medium text-gray-400 mb-2 text-center">Focusing on:</label>
+                         <select id="task-select" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-opacity"></select>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"><div class="glass-effect rounded-xl p-8 max-w-sm w-full mx-4"><h3 class="text-xl font-bold text-white mb-6">Timer Settings</h3><div class="space-y-4"><div><label class="block text-sm font-medium text-gray-400 mb-2">Focus (minutes)</label><input type="number" id="focus-duration-input" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white" min="1"></div><div><label class="block text-sm font-medium text-gray-400 mb-2">Short Break (minutes)</label><input type="number" id="short-break-duration-input" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white" min="1"></div><div><label class="block text-sm font-medium text-gray-400 mb-2">Long Break (minutes)</label><input type="number" id="long-break-duration-input" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white" min="1"></div></div><div class="flex justify-end gap-4 mt-8"><button id="cancel-settings-btn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition">Cancel</button><button id="save-settings-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition">Save</button></div></div></div>
+    <div id="session-complete-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center"><div class="glass-effect rounded-xl p-8 max-w-md w-full mx-4 text-center"><h3 class="text-2xl font-bold text-white mb-2">Session Complete!</h3><p class="text-gray-400 mb-8">What's next?</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-4"><button id="next-short-break" class="bg-sky-600 hover:bg-sky-700 p-4 rounded-lg font-semibold">Short Break</button><button id="next-long-break" class="bg-green-600 hover:bg-green-700 p-4 rounded-lg font-semibold">Long Break</button><button id="next-focus-20" class="bg-indigo-600 hover:bg-indigo-700 col-span-1 sm:col-span-2 p-4 rounded-lg font-semibold">Focus (+20 min)</button><div class="col-span-1 sm:col-span-2 flex items-center gap-2"><input type="number" id="custom-focus-input" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white" placeholder="Custom mins" min="1"><button id="next-focus-custom" class="bg-purple-600 hover:bg-purple-700 p-3 rounded-lg flex-shrink-0 font-semibold">Start</button></div></div></div></div>
+    <audio id="notification-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-notification-951.mp3" preload="auto"></audio>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, increment, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDvOSwEPDT1kiBFEdUXyH_3-ZlLLaUPmmk",
+          authDomain: "flow-ea773.firebaseapp.com",
+          projectId: "flow-ea773",
+          storageBucket: "flow-ea773.appspot.com",
+          messagingSenderId: "426640040797",
+          appId: "1:426640040797:web:1ffcd2becbf8d33b097eb4"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- Global State ---
+        let currentUser, timerInterval;
+        let isRunning = false;
+        let currentMode = 'focus';
+        let timeRemaining;
+        let tasksCache = [];
+        let DURATIONS = { focus: 25, shortBreak: 5, longBreak: 15 };
+
+        // --- UI Elements ---
+        const ui = {
+            timerDisplay: document.getElementById('timer-display'),
+            startPauseBtn: document.getElementById('start-pause-btn'),
+            startPauseText: document.getElementById('start-pause-text'),
+            resetBtn: document.getElementById('reset-btn'),
+            taskSelect: document.getElementById('task-select'),
+            taskSelectLabel: document.getElementById('task-select-label'),
+            notificationSound: document.getElementById('notification-sound'),
+            modeButtons: document.querySelectorAll('.mode-btn'),
+            progressRing: document.getElementById('progress-ring-circle'),
+            settings: {
+                btn: document.getElementById('settings-btn'),
+                modal: document.getElementById('settings-modal'),
+                saveBtn: document.getElementById('save-settings-btn'),
+                cancelBtn: document.getElementById('cancel-settings-btn'),
+                focusInput: document.getElementById('focus-duration-input'),
+                shortBreakInput: document.getElementById('short-break-duration-input'),
+                longBreakInput: document.getElementById('long-break-duration-input'),
+            },
+            sessionComplete: {
+                modal: document.getElementById('session-complete-modal'),
+                shortBreakBtn: document.getElementById('next-short-break'),
+                longBreakBtn: document.getElementById('next-long-break'),
+                focus20Btn: document.getElementById('next-focus-20'),
+                customFocusBtn: document.getElementById('next-focus-custom'),
+                customFocusInput: document.getElementById('custom-focus-input'),
+            }
+        };
+
+        const radius = ui.progressRing.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        ui.progressRing.style.strokeDasharray = `${circumference} ${circumference}`;
+
+        // --- Core Application Logic ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await loadUserSettings();
+                loadTasksIntoSelect();
+                checkAndResumeTimer();
+            } else {
+                window.location.href = window.location.href.replace('pomodoro.html', 'auth.html');
+            }
+        });
+
+        const loadUserSettings = async () => {
+             const settingsRef = doc(db, 'users', currentUser.uid, 'settings', 'pomodoro');
+            const docSnap = await getDoc(settingsRef);
+            if (docSnap.exists()) {
+                DURATIONS = { ...docSnap.data() };
+            }
+            if (!localStorage.getItem('pomodoroState')) {
+                resetTimer();
+            }
+        };
+
+        const loadTasksIntoSelect = () => {
+             const tasksRef = collection(db, 'users', currentUser.uid, 'tasks');
+            const q = query(tasksRef, where('completed', '==', false));
+            onSnapshot(q, (snapshot) => {
+                tasksCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const selectedTaskId = ui.taskSelect.value;
+                ui.taskSelect.innerHTML = '<option value="">Select a task to focus on</option>';
+                if (tasksCache.length === 0) {
+                    ui.taskSelect.innerHTML = '<option value="" disabled>No active tasks</option>';
+                } else {
+                    tasksCache.forEach(task => {
+                        const option = new Option(task.title, task.id);
+                        ui.taskSelect.add(option);
+                    });
+                    if (tasksCache.find(t => t.id === selectedTaskId)) {
+                         ui.taskSelect.value = selectedTaskId;
+                    }
+                }
+            });
+        };
+        
+        const logSession = async (minutes, mode) => {
+            if (!currentUser) return;
+            const today = new Date().toISOString().slice(0, 10);
+            const analyticsRef = doc(db, 'users', currentUser.uid, 'analytics', today);
+            
+            if (mode === 'focus') {
+                await setDoc(analyticsRef, { minutesFocused: increment(minutes) }, { merge: true });
+                const taskId = ui.taskSelect.value;
+                if (!taskId) return;
+                const taskRef = doc(db, 'users', currentUser.uid, 'tasks', taskId);
+                await updateDoc(taskRef, { loggedTime: increment(minutes) });
+                const focusedTask = tasksCache.find(t => t.id === taskId);
+                if (focusedTask && focusedTask.goalId) {
+                    const goalRef = doc(db, 'users', currentUser.uid, 'goals', focusedTask.goalId);
+                    await updateDoc(goalRef, { totalTimeFocused: increment(minutes) });
+                }
+            } else {
+                await setDoc(analyticsRef, { minutesOnBreak: increment(minutes) }, { merge: true });
+            }
+        };
+        
+        // --- Timer Engine (Rewritten for Reliability) ---
+        const checkAndResumeTimer = () => {
+            const savedState = JSON.parse(localStorage.getItem('pomodoroState'));
+            if (savedState && savedState.endTime > Date.now() && savedState.uid === currentUser.uid) {
+                const remainingSeconds = Math.round((savedState.endTime - Date.now()) / 1000);
+                startTimer(savedState.duration, savedState.mode, remainingSeconds);
+            } else {
+                localStorage.removeItem('pomodoroState');
+                resetTimer();
+            }
+        };
+
+        const startTimer = (durationMinutes, mode, remainingSeconds = null) => {
+            if (isRunning) return;
+            
+            const sessionDuration = durationMinutes || DURATIONS[mode];
+            timeRemaining = remainingSeconds !== null ? remainingSeconds : sessionDuration * 60;
+            const endTime = Date.now() + timeRemaining * 1000;
+            
+            isRunning = true;
+            ui.startPauseText.textContent = 'Pause';
+            switchMode(mode, false);
+            localStorage.setItem('pomodoroState', JSON.stringify({ endTime, mode, duration: sessionDuration, uid: currentUser.uid }));
+            
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                const stateFromStorage = JSON.parse(localStorage.getItem('pomodoroState') || '{}');
+                timeRemaining = Math.max(0, Math.round((stateFromStorage.endTime - Date.now()) / 1000));
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    const { mode, duration } = stateFromStorage;
+                    pauseTimer();
+                    ui.notificationSound.play();
+                    
+                    logSession(duration, mode);
+                    
+                    if (mode === 'focus') {
+                        ui.sessionComplete.modal.classList.remove('hidden');
+                    } else {
+                        switchMode('focus');
+                    }
+                }
+            }, 500);
+        };
+        
+        const pauseTimer = () => {
+            isRunning = false;
+            ui.startPauseText.textContent = 'Start';
+            clearInterval(timerInterval);
+            localStorage.removeItem('pomodoroState');
+        };
+
+        const resetTimer = () => {
+            pauseTimer();
+            timeRemaining = DURATIONS[currentMode] * 60;
+            updateTimerDisplay();
+        };
+
+        const switchMode = (newMode, doReset = true) => {
+            if (isRunning) return;
+            currentMode = newMode;
+            updateUIForMode(newMode);
+            if (doReset) resetTimer();
+        };
+
+        // --- UI Updates & Modals ---
+        const updateTimerDisplay = () => {
+            const minutes = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+            const seconds = (timeRemaining % 60).toString().padStart(2, '0');
+            ui.timerDisplay.textContent = `${minutes}:${seconds}`;
+            document.title = `${minutes}:${seconds} - Flow`;
+            updateProgressBar();
+        };
+
+        const updateProgressBar = () => {
+            const state = JSON.parse(localStorage.getItem('pomodoroState'));
+            const totalDuration = (state ? state.duration : DURATIONS[currentMode]) * 60;
+            const progress = (totalDuration - timeRemaining) / totalDuration;
+            ui.progressRing.style.strokeDashoffset = circumference - Math.max(0, progress) * circumference;
+        };
+
+        const updateUIForMode = (mode) => {
+            ui.modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+            const isFocus = mode === 'focus';
+            ui.taskSelect.disabled = !isFocus;
+            ui.taskSelectLabel.textContent = isFocus ? 'Focusing on:' : 'On a Break';
+        };
+        
+        const openSettingsModal = () => {
+            ui.settings.focusInput.value = DURATIONS.focus;
+            ui.settings.shortBreakInput.value = DURATIONS.shortBreak;
+            ui.settings.longBreakInput.value = DURATIONS.longBreak;
+            ui.settings.modal.classList.remove('hidden');
+};
+        const closeSettingsModal = () => ui.settings.modal.classList.add('hidden');
+        const saveSettings = async () => {
+            const newFocus = parseInt(ui.settings.focusInput.value);
+            const newShort = parseInt(ui.settings.shortBreakInput.value);
+            const newLong = parseInt(ui.settings.longBreakInput.value);
+            if (![newFocus, newShort, newLong].every(val => val > 0)) {
+                alert("Please enter valid, positive numbers."); return;
+            }
+            DURATIONS = { focus: newFocus, shortBreak: newShort, longBreak: newLong };
+            if (currentUser) {
+                await setDoc(doc(db, 'users', currentUser.uid, 'settings', 'pomodoro'), DURATIONS);
+            }
+            closeSettingsModal();
+            if (!isRunning) { resetTimer(); }
+        };
+
+        // --- Event Listeners ---
+        ui.startPauseBtn.addEventListener('click', () => { isRunning ? pauseTimer() : startTimer(null, currentMode); });
+        ui.resetBtn.addEventListener('click', resetTimer);
+        ui.modeButtons.forEach(btn => btn.addEventListener('click', () => switchMode(btn.dataset.mode)));
+        
+        ui.settings.btn.addEventListener('click', openSettingsModal);
+        ui.settings.cancelBtn.addEventListener('click', closeSettingsModal);
+        ui.settings.saveBtn.addEventListener('click', saveSettings);
+        
+        ui.sessionComplete.shortBreakBtn.addEventListener('click', () => { ui.sessionComplete.modal.classList.add('hidden'); switchMode('shortBreak'); });
+        ui.sessionComplete.longBreakBtn.addEventListener('click', () => { ui.sessionComplete.modal.classList.add('hidden'); switchMode('longBreak'); });
+        ui.sessionComplete.focus20Btn.addEventListener('click', () => { ui.sessionComplete.modal.classList.add('hidden'); startTimer(20, 'focus'); });
+        ui.sessionComplete.customFocusBtn.addEventListener('click', () => {
+            const customMins = parseInt(ui.sessionComplete.customFocusInput.value);
+            if (customMins > 0) {
+                ui.sessionComplete.modal.classList.add('hidden');
+                startTimer(customMins, 'focus');
+                ui.sessionComplete.customFocusInput.value = '';
+            }
+        });
+
+    </script>
+</body>
+</html>

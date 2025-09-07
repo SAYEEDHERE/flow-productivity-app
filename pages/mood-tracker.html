@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood Tracker - Flow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: rgb(17 24 39); color: rgb(229 231 235); overflow-x: hidden; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .glass-effect { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes blob { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        .sidebar-link { display: flex; align-items: center; padding: 0.75rem 1.25rem; border-radius: 0.5rem; color: #d1d5db; transition: all 0.2s ease-in-out; font-weight: 500;}
+        .sidebar-link:hover { background-color: rgba(255, 255, 255, 0.1); color: #f9fafb; }
+        .sidebar-link.active { background-color: #4f46e5; color: #f9fafb; }
+        .sidebar-link i { width: 1.25rem; margin-right: 0.75rem; text-align: center; }
+        .mood-btn { position: relative; }
+        .mood-btn.selected { transform: scale(1.2); border-color: white; }
+        .mood-btn .tooltip { visibility: hidden; opacity: 0; transition: opacity 0.2s; }
+        .mood-btn:hover .tooltip { visibility: visible; opacity: 1; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="relative min-h-screen w-full">
+        <!-- Animated Background Shapes -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500 rounded-full mix-blend-screen filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+
+        <!-- App Layout -->
+        <div class="relative min-h-screen flex z-10">
+            <!-- Sidebar -->
+            <aside class="w-64 glass-effect p-6 flex-shrink-0 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 px-2 mb-10"><i class="fas fa-wave-square text-2xl text-indigo-400"></i><h1 class="text-2xl font-bold font-poppins text-white">Flow</h1></div>
+                    <nav class="space-y-2">
+                        <a href="dashboard.html" class="sidebar-link"><i class="fas fa-home"></i><span>Home</span></a>
+                        <a href="goals.html" class="sidebar-link"><i class="fas fa-bullseye"></i><span>Goals</span></a>
+                        <a href="tasks.html" class="sidebar-link"><i class="fas fa-check-circle"></i><span>Tasks</span></a>
+                        <a href="pomodoro.html" class="sidebar-link"><i class="fas fa-clock"></i><span>Pomodoro</span></a>
+                        <a href="#" class="sidebar-link active"><i class="fas fa-smile-beam"></i><span>Mood Tracker</span></a>
+                        <a href="analytics.html" class="sidebar-link"><i class="fas fa-chart-pie"></i><span>Analytics</span></a>
+                    </nav>
+                </div>
+                <div><a href="settings.html" class="sidebar-link"><i class="fas fa-cog"></i><span>Settings</span></a></div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-8 overflow-y-auto">
+                <header class="mb-8">
+                    <h2 class="text-3xl font-bold text-white font-poppins">Mood Tracker</h2>
+                    <p class="text-gray-400">Check in with yourself. How are you feeling right now?</p>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="glass-effect rounded-xl p-8">
+                            <h3 id="form-title" class="text-xl font-bold text-white mb-6">Log Today's Mood</h3>
+                            <div id="mood-selection" class="flex items-center justify-between p-4 rounded-lg bg-gray-900/50 mb-6"></div>
+                            <textarea id="mood-note" class="w-full bg-gray-900/50 border border-gray-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder-gray-500" rows="3" placeholder="What's making you feel this way? (optional)"></textarea>
+                            <div class="flex justify-end mt-4">
+                                <button id="save-mood-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>Save Entry</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1">
+                        <div class="glass-effect rounded-xl p-6 h-full">
+                            <h3 class="text-lg font-bold text-white mb-4">Recent Entries</h3>
+                            <ul id="mood-history" class="space-y-4 max-h-[60vh] overflow-y-auto"></ul>
+                            <div id="loading-spinner" class="text-center p-8 text-gray-400"><i class="fas fa-spinner fa-spin text-2xl"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDvOSwEPDT1kiBFEdUXyH_3-ZlLLaUPmmk",
+          authDomain: "flow-ea773.firebaseapp.com",
+          projectId: "flow-ea773",
+          storageBucket: "flow-ea773.appspot.com",
+          messagingSenderId: "426640040797",
+          appId: "1:426640040797:web:1ffcd2becbf8d33b097eb4"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- State ---
+        let currentUser;
+        let selectedMoodScore = null;
+        let todaysEntryId = null;
+
+        // --- UI Elements ---
+        const ui = {
+            moodSelection: document.getElementById('mood-selection'),
+            moodNote: document.getElementById('mood-note'),
+            saveMoodBtn: document.getElementById('save-mood-btn'),
+            moodHistory: document.getElementById('mood-history'),
+            loadingSpinner: document.getElementById('loading-spinner'),
+            formTitle: document.getElementById('form-title'),
+        };
+
+        const moodScale = [
+            { score: 1, emoji: '😭', label: 'Awful' }, { score: 2, emoji: '😥', label: 'Sad' },
+            { score: 3, emoji: '😔', label: 'Down' }, { score: 4, emoji: '😕', label: 'Meh' },
+            { score: 5, emoji: '😐', label: 'Neutral' }, { score: 6, emoji: '🙂', label: 'Okay' },
+            { score: 7, emoji: '😊', label: 'Good' }, { score: 8, emoji: '😄', label: 'Great' },
+            { score: 9, emoji: '🤩', label: 'Productive' }, { score: 10, emoji: '🚀', label: 'Amazing' }
+        ];
+
+        // --- App Initialization ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                renderMoodButtons();
+                listenForMoodHistory();
+            } else {
+                window.location.href = window.location.href.replace('mood-tracker.html', 'auth.html');
+            }
+        });
+
+        const renderMoodButtons = () => {
+            ui.moodSelection.innerHTML = '';
+            moodScale.forEach(mood => {
+                const button = document.createElement('button');
+                button.className = 'mood-btn flex flex-col items-center justify-center p-2 rounded-lg border-2 border-transparent transition-all duration-200';
+                button.dataset.score = mood.score;
+                button.innerHTML = `<span class="text-3xl">${mood.emoji}</span><span class="tooltip absolute -top-8 bg-gray-900 text-white text-xs px-2 py-1 rounded">${mood.label}</span>`;
+                ui.moodSelection.appendChild(button);
+            });
+        };
+
+        const listenForMoodHistory = () => {
+            if (!currentUser) return;
+            const moodsRef = collection(db, 'users', currentUser.uid, 'moods');
+            
+            // This simpler listener fetches all docs and sorts them in the browser.
+            // This AVOIDS the need for a composite index in Firestore.
+            onSnapshot(moodsRef, (snapshot) => {
+                ui.loadingSpinner.style.display = 'none';
+                ui.moodHistory.innerHTML = '';
+                todaysEntryId = null;
+                
+                let entries = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Sort entries by date client-side
+                entries.sort((a, b) => (b.createdAt?.toMillis() || 0) - (a.createdAt?.toMillis() || 0));
+
+                if (entries.length === 0) {
+                    ui.moodHistory.innerHTML = '<li class="text-center text-gray-500">No entries yet.</li>';
+                } else {
+                    const todayStr = new Date().toISOString().slice(0, 10);
+                    entries.forEach(entry => {
+                        const docDate = entry.createdAt?.toDate().toISOString().slice(0, 10);
+                        if (docDate === todayStr) {
+                            todaysEntryId = entry.id;
+                        }
+                        renderHistoryItem(entry);
+                    });
+                }
+                
+                ui.formTitle.textContent = todaysEntryId ? "Update Today's Mood" : "Log Today's Mood";
+                ui.saveMoodBtn.textContent = todaysEntryId ? 'Update Entry' : 'Save Entry';
+            }, (error) => {
+                console.error("Error listening for mood history:", error);
+                ui.loadingSpinner.innerHTML = '<span class="text-red-500">Error loading history.</span>';
+            });
+        };
+        
+        const renderHistoryItem = (data) => {
+            const mood = moodScale.find(m => m.score === data.moodScore);
+            if (!mood || !data.createdAt) return;
+            const date = data.createdAt.toDate();
+            const formattedDateTime = date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+            
+            const li = document.createElement('li');
+            li.className = 'flex items-start gap-4';
+            li.innerHTML = `<div class="text-3xl mt-1">${mood.emoji}</div><div><p class="font-bold text-white">${mood.label} <span class="text-sm font-normal text-gray-500 ml-2">${formattedDateTime}</span></p><p class="text-gray-400 text-sm">${data.note || 'No note added.'}</p></div>`;
+            ui.moodHistory.appendChild(li);
+        };
+        
+        const saveMoodEntry = async () => {
+            if (!selectedMoodScore || !currentUser) return;
+
+            ui.saveMoodBtn.disabled = true;
+            ui.saveMoodBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            // If an ID for today's entry exists, update it. Otherwise, create a new doc with a unique ID.
+            const docId = todaysEntryId || new Date().getTime().toString(); // Use timestamp for a unique ID
+            const moodRef = doc(db, 'users', currentUser.uid, 'moods', docId);
+
+            try {
+                await setDoc(moodRef, {
+                    moodScore: selectedMoodScore,
+                    note: ui.moodNote.value.trim(),
+                    createdAt: serverTimestamp()
+                }, { merge: true });
+
+                // Reset UI after saving
+                ui.moodNote.value = '';
+                const selectedBtn = document.querySelector('.mood-btn.selected');
+                if (selectedBtn) selectedBtn.classList.remove('selected');
+                selectedMoodScore = null;
+                ui.saveMoodBtn.disabled = true;
+            } catch (error) {
+                console.error("Error saving mood entry: ", error);
+            }
+        };
+
+        // --- Event Listeners ---
+        ui.moodSelection.addEventListener('click', (e) => {
+            const button = e.target.closest('.mood-btn');
+            if (!button) return;
+            document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+            selectedMoodScore = parseInt(button.dataset.score);
+            button.classList.add('selected');
+            ui.saveMoodBtn.disabled = false;
+        });
+        
+        ui.saveMoodBtn.addEventListener('click', saveMoodEntry);
+
+    </script>
+</body>
+</html>

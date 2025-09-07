@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow - Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #e5e7eb;
+            overflow: hidden; /* Prevents scrollbars from background elements */
+        }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .glass-effect {
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .form-container {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .form-hidden {
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+            left: 0;
+        }
+        @keyframes blob {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animation-delay-2000 { animation-delay: 2s; }
+        .animation-delay-4000 { animation-delay: 4s; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        .modal-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Animated Background Shapes -->
+    <div class="absolute top-0 -left-4 w-72 h-72 lg:w-96 lg:h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-2xl opacity-40 animate-blob"></div>
+    <div class="absolute top-0 -right-4 w-72 h-72 lg:w-96 lg:h-96 bg-yellow-500 rounded-full mix-blend-screen filter blur-2xl opacity-40 animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 lg:w-96 lg:h-96 bg-pink-500 rounded-full mix-blend-screen filter blur-2xl opacity-40 animate-blob animation-delay-4000"></div>
+
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md mx-auto">
+            <div class="glass-effect rounded-2xl shadow-2xl p-8 md:p-12 relative overflow-hidden">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center">
+                        <i class="fas fa-wave-square text-3xl text-indigo-400 mr-2"></i>
+                        <h1 class="text-3xl font-bold font-poppins text-white">Flow</h1>
+                    </div>
+                </div>
+
+                <!-- Login Form -->
+                <div id="login-form" class="form-container">
+                    <h2 class="text-2xl font-bold text-white mb-2">Welcome Back</h2>
+                    <p class="text-gray-400 mb-6">Enter your details to sign in.</p>
+                    
+                    <form id="login-form-element" class="space-y-4">
+                        <div>
+                            <label for="login-email" class="sr-only">Email</label>
+                            <input type="email" id="login-email" name="email" required placeholder="Email Address" class="w-full bg-gray-700/50 border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                        </div>
+                        <div class="relative">
+                            <label for="login-password" class="sr-only">Password</label>
+                            <input type="password" id="login-password" name="password" required placeholder="Password" class="w-full bg-gray-700/50 border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <button type="button" class="password-toggle absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-white">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="text-right">
+                             <a href="#" id="forgot-password-link" class="text-sm text-indigo-400 hover:text-indigo-300">Forgot Password?</a>
+                        </div>
+                        <div id="login-error" class="text-red-400 text-sm font-medium hidden pt-2 text-center"></div>
+                        <button type="submit" id="login-submit-btn" class="w-full flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300">
+                            <span class="btn-text">Sign In</span>
+                            <svg class="spinner h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        </button>
+                    </form>
+
+                    <p class="mt-6 text-center text-sm text-gray-400">
+                        Don't have an account? 
+                        <a href="#" id="show-register" class="font-medium text-indigo-400 hover:text-indigo-300">Sign Up</a>
+                    </p>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="form-container form-hidden">
+                    <h2 class="text-2xl font-bold text-white mb-2">Create Account</h2>
+                    <p class="text-gray-400 mb-6">Join the Flow community today.</p>
+                    
+                    <form id="register-form-element" class="space-y-4">
+                        <div>
+                             <label for="register-email" class="sr-only">Email</label>
+                            <input type="email" id="register-email" required placeholder="Email Address" class="w-full bg-gray-700/50 border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                        </div>
+                        <div class="relative">
+                            <label for="register-password" class="sr-only">Password</label>
+                            <input type="password" id="register-password" required placeholder="Password (min. 8 characters)" class="w-full bg-gray-700/50 border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                            <button type="button" class="password-toggle absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-white">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div id="register-error" class="text-red-400 text-sm font-medium hidden pt-2 text-center"></div>
+                        <button type="submit" id="register-submit-btn" class="w-full flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300">
+                             <span class="btn-text">Create Account</span>
+                            <svg class="spinner h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        </button>
+                    </form>
+
+                    <p class="mt-6 text-center text-sm text-gray-400">
+                        Already have an account? 
+                        <a href="#" id="show-login" class="font-medium text-indigo-400 hover:text-indigo-300">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300 modal-hidden">
+        <div class="w-full max-w-md mx-auto glass-effect rounded-2xl shadow-2xl p-8 relative">
+             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl leading-none">&times;</button>
+             <h2 class="text-2xl font-bold text-white mb-2 text-center">Reset Password</h2>
+             <p id="modal-instructions" class="text-gray-400 mb-6 text-center">Enter your email and we'll send you a reset link.</p>
+             <div id="modal-success" class="text-green-400 mb-6 text-center hidden"></div>
+             
+             <form id="reset-form" class="space-y-4">
+                 <div>
+                    <label for="reset-email" class="sr-only">Email</label>
+                    <input type="email" id="reset-email" required placeholder="Email Address" class="w-full bg-gray-700/50 border-gray-600 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                 </div>
+                 <div id="reset-error" class="text-red-400 text-sm font-medium hidden pt-2 text-center"></div>
+                 <button type="submit" id="reset-submit-btn" class="w-full flex justify-center items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300">
+                    <span class="btn-text">Send Reset Link</span>
+                    <svg class="spinner h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                </button>
+             </form>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // --- LIVE FIREBASE INTEGRATION ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvOSwEPDT1kiBFEdUXyH_3-ZlLLaUPmmk",
+            authDomain: "flow-ea773.firebaseapp.com",
+            projectId: "flow-ea773",
+            storageBucket: "flow-ea773.appspot.com",
+            messagingSenderId: "426640040797",
+            appId: "1:426640040797:web:1ffcd2becbf8d33b097eb4",
+            measurementId: "G-H0JKT17N18"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // --- UI ELEMENT SELECTORS ---
+        const loginFormContainer = document.getElementById('login-form');
+        const registerFormContainer = document.getElementById('register-form');
+        const showRegisterLink = document.getElementById('show-register');
+        const showLoginLink = document.getElementById('show-login');
+        const loginForm = document.getElementById('login-form-element');
+        const registerForm = document.getElementById('register-form-element');
+        const loginBtn = document.getElementById('login-submit-btn');
+        const registerBtn = document.getElementById('register-submit-btn');
+        const loginError = document.getElementById('login-error');
+        const registerError = document.getElementById('register-error');
+        
+        // Modal selectors
+        const forgotPasswordModal = document.getElementById('forgot-password-modal');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const resetForm = document.getElementById('reset-form');
+        const resetBtn = document.getElementById('reset-submit-btn');
+        const resetError = document.getElementById('reset-error');
+        const modalInstructions = document.getElementById('modal-instructions');
+        const modalSuccess = document.getElementById('modal-success');
+        const resetFormContainer = document.getElementById('reset-form');
+
+        // --- UI LOGIC ---
+        const toggleForms = (showRegister) => {
+            if(showRegister) {
+                loginFormContainer.classList.add('form-hidden');
+                registerFormContainer.classList.remove('form-hidden');
+            } else {
+                registerFormContainer.classList.add('form-hidden');
+                loginFormContainer.classList.remove('form-hidden');
+            }
+        };
+
+        showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); toggleForms(true); });
+        showLoginLink.addEventListener('click', (e) => { e.preventDefault(); toggleForms(false); });
+
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const passwordInput = button.closest('.relative').querySelector('input');
+                const icon = button.querySelector('i');
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                icon.classList.toggle('fa-eye', !isPassword);
+                icon.classList.toggle('fa-eye-slash', isPassword);
+            });
+        });
+        
+        const setLoading = (button, isLoading) => {
+            const btnText = button.querySelector('.btn-text');
+            const spinner = button.querySelector('.spinner');
+            button.disabled = isLoading;
+            btnText.classList.toggle('hidden', isLoading);
+            spinner.classList.toggle('hidden', !isLoading);
+        };
+        
+        const displayError = (el, msg) => { el.textContent = msg; el.classList.remove('hidden'); };
+        const clearError = (el) => { el.textContent = ''; el.classList.add('hidden'); };
+        
+        const getFirebaseErrorMessage = (errorCode) => {
+            switch (errorCode) {
+                case 'auth/invalid-email':
+                    return 'Please enter a valid email address.';
+                case 'auth/user-not-found':
+                case 'auth/wrong-password':
+                case 'auth/invalid-credential':
+                    return 'Invalid credentials. Please check your email and password.';
+                case 'auth/email-already-in-use':
+                    return 'An account with this email already exists.';
+                case 'auth/weak-password':
+                    return 'Password should be at least 6 characters long.';
+                default:
+                    return 'An unexpected error occurred. Please try again.';
+            }
+        };
+
+        // --- MODAL LOGIC ---
+        const showModal = () => {
+            modalInstructions.classList.remove('hidden');
+            modalSuccess.classList.add('hidden');
+            resetFormContainer.classList.remove('hidden');
+            resetForm.reset();
+            clearError(resetError);
+            forgotPasswordModal.classList.remove('modal-hidden');
+        }
+        const hideModal = () => forgotPasswordModal.classList.add('modal-hidden');
+        
+        forgotPasswordLink.addEventListener('click', (e) => { e.preventDefault(); showModal(); });
+        closeModalBtn.addEventListener('click', hideModal);
+        forgotPasswordModal.addEventListener('click', (e) => { if(e.target === forgotPasswordModal) hideModal(); });
+
+        // --- FORM SUBMISSION ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoading(loginBtn, true);
+            clearError(loginError);
+            try {
+                const { email, password } = loginForm.elements;
+                await signInWithEmailAndPassword(auth, email.value, password.value);
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                displayError(loginError, getFirebaseErrorMessage(error.code));
+            } finally {
+                setLoading(loginBtn, false);
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoading(registerBtn, true);
+            clearError(registerError);
+            try {
+                const email = registerForm.elements['register-email'].value;
+                const password = registerForm.elements['register-password'].value;
+                await createUserWithEmailAndPassword(auth, email, password);
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                displayError(registerError, getFirebaseErrorMessage(error.code));
+            } finally {
+                setLoading(registerBtn, false);
+            }
+        });
+
+        resetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            setLoading(resetBtn, true);
+            clearError(resetError);
+            try {
+                const email = resetForm.elements['reset-email'].value;
+                await sendPasswordResetEmail(auth, email);
+                modalInstructions.classList.add('hidden');
+                resetFormContainer.classList.add('hidden');
+                modalSuccess.textContent = "If an account exists for that email, a reset link has been sent.";
+                modalSuccess.classList.remove('hidden');
+            } catch (error) {
+                displayError(resetError, getFirebaseErrorMessage(error.code));
+            } finally {
+                setLoading(resetBtn, false);
+            }
+        });
+
+    </script>
+</body>
+</html>

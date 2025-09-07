@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow - Master Your Goals, One Pomodoro at a Time</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: rgb(17 24 39); /* CORRECTED: Restored original color */
+            color: #e5e7eb;
+            overflow-x: hidden;
+        }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .animated-gradient {
+            background: linear-gradient(-45deg, #f87171, #fb923c, #60a5fa, #818cf8);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .aurora-background {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+        .aurora-shape {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(100px);
+            opacity: 0.3;
+        }
+        .aurora-1 {
+            width: 500px; height: 500px;
+            top: -250px; left: -150px;
+            background-color: #4f46e5;
+            animation: aurora-one 20s infinite alternate;
+        }
+        .aurora-2 {
+            width: 400px; height: 400px;
+            top: 50px; right: -200px;
+            background-color: #ec4899;
+            animation: aurora-two 22s infinite alternate;
+        }
+         .aurora-3 {
+            width: 300px; height: 300px;
+            bottom: -100px; left: 10%;
+            background-color: #22d3ee;
+            animation: aurora-three 18s infinite alternate;
+        }
+
+        @keyframes aurora-one {
+            from { transform: rotate(0deg) translateX(0px) translateY(20px); }
+            to { transform: rotate(360deg) translateX(100px) translateY(-50px); }
+        }
+        @keyframes aurora-two {
+            from { transform: rotate(0deg) translateX(0px) translateY(0px); }
+            to { transform: rotate(360deg) translateX(-80px) translateY(40px); }
+        }
+         @keyframes aurora-three {
+            from { transform: rotate(0deg) translateX(0px) translateY(0px); }
+            to { transform: rotate(360deg) translateX(50px) translateY(-20px); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-374px * 5)); } /* 350px width + 24px gap = 374px */
+        }
+        .scroller-inner {
+            animation: scroll 30s linear infinite;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Video Intro Modal -->
+    <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm z-50 flex items-center justify-center transition-opacity duration-300 ease-out">
+        <div class="relative w-full max-w-3xl mx-4">
+            <video id="intro-video" class="w-full h-auto rounded-lg shadow-2xl" muted autoplay playsinline>
+                <source src="assets/video/intro.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <button id="close-video-btn" class="absolute -top-2 -right-2 md:-top-4 md:-right-4 w-10 h-10 flex items-center justify-center bg-white bg-opacity-20 rounded-full text-white text-2xl hover:bg-opacity-30 transition cursor-pointer leading-none">&times;</button>
+        </div>
+    </div>
+    
+    <div class="relative">
+        <div class="aurora-background">
+            <div class="aurora-shape aurora-1"></div>
+            <div class="aurora-shape aurora-2"></div>
+            <div class="aurora-shape aurora-3"></div>
+        </div>
+
+        <!-- Header -->
+        <header class="fixed top-0 left-0 right-0 z-40 glass-effect">
+            <nav class="flex items-center justify-between max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-wave-square text-2xl text-indigo-400"></i>
+                    <h1 class="text-2xl font-bold font-poppins text-white">Flow</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#features" class="text-gray-300 hover:text-white transition hidden sm:block font-medium">Features</a>
+                    <a href="#testimonials" class="text-gray-300 hover:text-white transition hidden sm:block font-medium">Testimonials</a>
+                    <a href="pages/auth.html" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-5 rounded-lg transition shadow-lg shadow-indigo-500/20">Get Started</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Hero Section -->
+        <main class="relative z-0 flex items-center justify-center min-h-screen text-center px-4 pt-20">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-extrabold font-poppins text-white leading-tight reveal">
+                    Achieve a State of <span class="animated-gradient bg-clip-text text-transparent">Effortless Productivity.</span>
+                </h1>
+                <p class="mt-6 text-lg text-gray-300 max-w-2xl mx-auto reveal" style="transition-delay: 200ms;">
+                    Flow is your all-in-one productivity hub. Deconstruct ambitious goals, manage daily tasks, and cultivate deep focus with our integrated suite of tools.
+                </p>
+                <div class="mt-10 flex justify-center gap-4 flex-wrap reveal" style="transition-delay: 400ms;">
+                    <a href="pages/auth.html" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-indigo-500/30">
+                        Start Your Journey
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-bold font-poppins text-white">The Complete Productivity System</h2>
+                <p class="mt-4 text-gray-400">Everything you need to turn vision into reality.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <!-- CORRECTED: 5-card layout including Mood Tracker -->
+                <div class="glass-effect rounded-xl p-6 text-center transform hover:-translate-y-2 transition-transform duration-300 reveal"><div class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-500/20 mx-auto mb-4"><i class="fas fa-bullseye text-3xl text-indigo-400"></i></div><h3 class="text-lg font-semibold text-white">Goals</h3></div>
+                <div class="glass-effect rounded-xl p-6 text-center transform hover:-translate-y-2 transition-transform duration-300 reveal" style="transition-delay: 100ms;"><div class="flex items-center justify-center h-16 w-16 rounded-full bg-pink-500/20 mx-auto mb-4"><i class="fas fa-check-double text-3xl text-pink-400"></i></div><h3 class="text-lg font-semibold text-white">Tasks</h3></div>
+                <div class="glass-effect rounded-xl p-6 text-center transform hover:-translate-y-2 transition-transform duration-300 reveal" style="transition-delay: 200ms;"><div class="flex items-center justify-center h-16 w-16 rounded-full bg-sky-500/20 mx-auto mb-4"><i class="fas fa-clock text-3xl text-sky-400"></i></div><h3 class="text-lg font-semibold text-white">Pomodoro</h3></div>
+                <div class="glass-effect rounded-xl p-6 text-center transform hover:-translate-y-2 transition-transform duration-300 reveal" style="transition-delay: 300ms;"><div class="flex items-center justify-center h-16 w-16 rounded-full bg-yellow-500/20 mx-auto mb-4"><i class="fas fa-smile-beam text-3xl text-yellow-400"></i></div><h3 class="text-lg font-semibold text-white">Moods</h3></div>
+                <div class="glass-effect rounded-xl p-6 text-center transform hover:-translate-y-2 transition-transform duration-300 reveal" style="transition-delay: 400ms;"><div class="flex items-center justify-center h-16 w-16 rounded-full bg-green-500/20 mx-auto mb-4"><i class="fas fa-chart-pie text-3xl text-green-400"></i></div><h3 class="text-lg font-semibold text-white">Analytics</h3></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-24">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+            <h2 class="text-4xl font-bold font-poppins text-white">Loved by High-Achievers</h2>
+            <p class="mt-4 text-gray-400">Don't just take our word for it. See what others are saying.</p>
+        </div>
+        <div class="scroller w-full mt-16 overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]">
+            <div class="scroller-inner flex gap-6 w-max">
+                <!-- testimonials -->
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"I've tried the testing mode and it's perfect. Enjoying how it connects my studies and well-being!"</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=PS" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Priya S.</p><p class="text-sm text-gray-500">Student</p></div></div></div>
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"As a student, balancing deadlines and stress is tough. The Pomodoro and Mood Tracker combo is a lifesaver. Perfect app!"</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=RK" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Rohan K.</p><p class="text-sm text-gray-500">Student</p></div></div></div>
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"Finally, an app that is as beautiful as it is functional. It makes me *want* to be productive."</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=LK" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Lucky K.</p><p class="text-sm text-gray-500">Student</p></div></div></div>
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"The Mood Tracker linked with my Pomodoro sessions showed me exactly when I do my best work. Incredible."</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=SM" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Sarah M.</p><p class="text-sm text-gray-500">Teacher in IIT Jee domain</p></div></div></div>
+                <!-- Duplicate for seamless scroll -->
+                <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"I've tried the testing mode and it's perfect. Enjoying how it connects my studies and well-being!"</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=PS" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Priya S.</p><p class="text-sm text-gray-500">Student</p></div></div></div>
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"As a student, balancing deadlines and stress is tough. The Pomodoro and Mood Tracker combo is a lifesaver. Perfect app!"</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=RK" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Rohan K.</p><p class="text-sm text-gray-500">Student</p></div></div></div>
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"Flow is the first app that actually connected my to-do list to my life goals. It's a game-changer."</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=AD" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Alex D.</p><p class="text-sm text-gray-500">Software Engineer</p></div></div></div>
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"Finally, an app that is as beautiful as it is functional. It makes me *want* to be productive."</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=LK" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Lucky K.</p><p class="text-sm text-gray-500">Student</p></div></div></div>
+                 <div class="glass-effect rounded-xl p-6 w-[350px] text-left shrink-0"><p class="text-gray-300">"The Mood Tracker linked with my Pomodoro sessions showed me exactly when I do my best work. Incredible."</p><div class="flex items-center mt-4"><img class="w-10 h-10 rounded-full" src="https://placehold.co/40x40/1f2937/a78bfa?text=SM" alt="User Avatar"><div class="ml-3"><p class="font-semibold text-white">Sarah M.</p><p class="text-sm text-gray-500">Teacher in IIT Jee domain</p></div></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-24 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <h2 class="text-4xl md:text-5xl font-bold font-poppins text-white">Ready to Find Your Flow?</h2>
+            <p class="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">Stop juggling apps and start building momentum. Your complete productivity system is just one click away.</p>
+            <a href="pages/auth.html" class="mt-10 inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-10 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-indigo-500/30">
+                Get Started for Free
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/50 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 text-gray-400 text-sm">
+            <div class="flex flex-col sm:flex-row flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-6">
+                    <a href="https://www.linkedin.com/in/sayeed-here/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-300 flex items-center gap-2"><i class="fab fa-linkedin text-lg"></i><span>LinkedIn</span></a>
+                    <a href="https://github.com/SAYEEDHERE" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors duration-300 flex items-center gap-2"><i class="fab fa-github text-lg"></i><span>GitHub</span></a>
+                </div>
+                <div class="text-center"><p>© <span id="current-year"></span> Flow. Made with <span class="text-red-500">❤️</span> by Sayeed.</p></div>
+                <div class="text-right"><a href="mailto:productiveappflow@gmail.com" class="hover:text-white transition-colors duration-300">contact - productiveappflow@gmail.com</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Video Modal Logic ---
+        const videoModal = document.getElementById('video-modal');
+        if (videoModal && !localStorage.getItem('introHasBeenShown')) {
+            const introVideo = document.getElementById('intro-video');
+            const closeVideoBtn = document.getElementById('close-video-btn');
+            const closeModal = () => { videoModal.classList.add('opacity-0', 'pointer-events-none'); };
+            localStorage.setItem('introHasBeenShown', 'true');
+            closeVideoBtn.addEventListener('click', closeModal);
+            introVideo.addEventListener('ended', closeModal);
+            introVideo.addEventListener('error', closeModal);
+        } else if (videoModal) {
+            videoModal.style.display = 'none';
+        }
+        
+        // --- Copyright Year & Smooth Scroll ---
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // --- Scroll-triggered Animations ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
+
